@@ -16,6 +16,11 @@
         "name": "Lotus' Modified TerraGroup Labs Access Keycard",
         "shortName": "Lotus",
         "description": "A modified version of a single-use United Security-issues TerraGroup Labs access keycard. Essentially providing unlimited access to the TerraGroup laboratory. Painted in a certain shade of blue, Lotus' signature color, to distinguish it from ordinary access keycards. Coincidentally, an ex-Terragroup employee who is now the leader of one of the local bandit groups, used the same shade of blue to mark the key to his office inside the Terragroup laboratory."
+      },
+      "ch": {
+        "name": "莲花的泰拉集团实验室改造成员卡",
+        "shortName": "莲花",
+        "description": "一张经过改造的单次使用联合安全泰拉集团实验室访问钥匙卡。实际上提供对泰拉集团实验室的无限访问权限。卡片涂有莲花标志性的蓝色调，以区别于普通的访问钥匙卡。巧合的是，一位前泰拉集团员工——现在是当地一个匪帮的头目——曾用同样的蓝色标记他在泰拉集团实验室办公室的钥匙。"
       }
     },
     "CanRequireOnRagfair": false,
