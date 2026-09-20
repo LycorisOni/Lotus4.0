@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <RootNamespace>LunnayalunaLotus</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -12,10 +12,10 @@
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="SPTarkov.Common" Version="4.0.2" />
-        <PackageReference Include="SPTarkov.DI" Version="4.0.2" />
-        <PackageReference Include="SPTarkov.Server.Core" Version="4.0.2" />
-        <PackageReference Include="WTT-ServerCommonLib" Version="2.0.18" />
+        <PackageReference Include="SPtushonka.Common" Version="4.1.6" />
+        <PackageReference Include="SPtushonka.DI" Version="4.1.6" />
+        <PackageReference Include="SPtushonka.Server.Core" Version="4.1.6" />
+        <PackageReference Include="WTT-ServerCommonLib" Version="3.0.6" />
     </ItemGroup>
     <ItemGroup>
         <None Include="data\**">
