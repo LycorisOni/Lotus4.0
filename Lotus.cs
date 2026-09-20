@@ -10,50 +10,53 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using System.Reflection;
+using SPTarkov.Common.Models.Logging;
+using SPTarkov.Server.Core.Helpers.Server;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using Path = System.IO.Path;
 //Very important this is your namespace in all your .cs files or you break everything
 namespace LunnayalunaLotus;
 
 // This record holds the various properties for your mod
-public record ModMetadata : AbstractModMetadata
+public record ModMetadata : IModMetadata
 {
-    public override string ModGuid { get; init; } = "com.Luna.LunnayalunaLotus";
-    public override string Name { get; init; } = "Lotus";
-    public override string Author { get; init; } = "LunnayalunaLotus";
-    public override List<string>? Contributors { get; init; } = ["LycorisOni"];
-    public override SemanticVersioning.Version Version { get; init; } = new("1.7.4");
-    public override SemanticVersioning.Range SptVersion { get; init; } = new("~4.0.0");
-    public override List<string>? Incompatibilities { get; init; } = null;
-    public override Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; } = new()
+    public string ModGuid { get; init; } = "com.Luna.LunnayalunaLotus";
+    public string Name { get; init; } = "Lotus";
+    public string Author { get; init; } = "LunnayalunaLotus";
+    public List<string>? Contributors { get; init; } = ["LycorisOni"];
+    public SemanticVersioning.Version Version { get; init; } = new("1.7.4");
+    public SemanticVersioning.Range SptVersion { get; init; } = new("~4.1.0");
+    public bool HasPrepatcher { get; init; }
+    public List<string>? Incompatibilities { get; init; } = null;
+    public Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; } = new()
     {
-        { "com.wtt.commonlib", new SemanticVersioning.Range("~2.0") }
+        { "com.wtt.commonlib", new SemanticVersioning.Range("~3.0") }
     };
-    public override string? Url { get; init; } = null;
-    public override bool? IsBundleMod { get; init; } = false;
-    public override string? License { get; init; } = "MIT";
+    public string? Url { get; init; } = null;
+    public string? License { get; init; } = "MIT";
 }
 
 //This is the injectable. This determines load order. Usually don't ever need to mess with this for a Trader
-[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
+[Injectable(TypePriority = OnLoadOrder.PostLoad + 1)]
 //This is your main public class. Decides what you are doing basically. 
 public class LunaLotusJsonLoad(
     ISptLogger<LunaLotusJsonLoad> logger,
     ModHelper modHelper,
     ImageRouter imageRouter,
-    ConfigServer configServer,
+    TraderConfig traderConfig,
+    RagfairConfig ragfairConfig,
     TimeUtil timeUtil,
-    DatabaseService databaseService,
     AddCustomTraderHelper addCustomTraderHelper // This class is a custom one to be used as the main class for the mod. 
      
 )
     : IOnLoad
 //I would not worry about this leave it be. 
 {
-    private readonly TraderConfig _traderConfig = configServer.GetConfig<TraderConfig>();
-    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    private readonly TraderConfig _traderConfig = traderConfig;
+    private readonly RagfairConfig _ragfairConfig = ragfairConfig;
 
 //Your new public task this does some lovely grabbing of paths to make your life not difficult
-    public Task OnLoad()
+    public Task OnLoadAsync(CancellationToken ct)
     {
         Console.ForegroundColor = ConsoleColor.Magenta;
         Console.WriteLine("Make sure to check the Lotus modpage for gunsmith task solutions");
@@ -89,21 +92,21 @@ public class LunaLotusJsonLoad(
     }
 }
 
-[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
+[Injectable(TypePriority = OnLoadOrder.PostLoad + 1)]
 public class EditDatabaseValues(
-    DatabaseService databaseService)
+    LocationTable locationTable)
     : IOnLoad
 {
-    public Task OnLoad()
+    public Task OnLoadAsync(CancellationToken ct)
     {
-        EditLabs(databaseService);
+        EditLabs(locationTable);
 
         return Task.CompletedTask;
     }
 
-    public void EditLabs(DatabaseService databaseService)
+    public void EditLabs(LocationTable locationTable)
     {
-        var locations = databaseService.GetLocations();
+        var locations = locationTable;
         var lab = locations.Laboratory;
 
         lab.Base.AccessKeys = lab.Base.AccessKeys.Append("6747b519aa6cb78b189e6081");
@@ -111,12 +114,12 @@ public class EditDatabaseValues(
     }
 
 }
-[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 2)]
+[Injectable(TypePriority = OnLoadOrder.PostLoad + 2)]
 public class Oni(
     WTTServerCommonLib.WTTServerCommonLib wttCommon
 ) : IOnLoad
 {
-    public async Task OnLoad()
+    public async Task OnLoadAsync(CancellationToken ct)
     {
         var assembly = Assembly.GetExecutingAssembly();
         
@@ -124,8 +127,22 @@ public class Oni(
         await wttCommon.CustomAssortSchemeService.CreateCustomAssortSchemes(assembly);
         await wttCommon.CustomQuestService.CreateCustomQuests(assembly);
         await wttCommon.CustomQuestZoneService.CreateCustomQuestZones(assembly);
-        await wttCommon.CustomItemServiceExtended.CreateCustomItems(assembly);
         await wttCommon.CustomDialogueService.CreateCustomDialogues(assembly);
+        await Task.CompletedTask;
+    }
+}
+
+[Injectable(TypePriority = OnLoadOrder.Preload + 2)]
+public class Oni2(
+    WTTServerCommonLib.WTTServerCommonLib wttCommon
+) : IOnLoad
+{
+    public async Task OnLoadAsync(CancellationToken ct)
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        
+        // Use WTT-CommonLib services
+        await wttCommon.CustomItemServiceExtended.CreateCustomItems(assembly);
         await Task.CompletedTask;
     }
 }
