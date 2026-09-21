@@ -8,7 +8,7 @@ public record ModMetadata : IModMetadata
     public string Name { get; init; } = "Lotus";
     public string Author { get; init; } = "LunnayalunaLotus";
     public List<string>? Contributors { get; init; } = ["LycorisOni"];
-    public SemanticVersioning.Version Version { get; init; } = new("1.7.6");
+    public SemanticVersioning.Version Version { get; init; } = new("1.8.0");
     public SemanticVersioning.Range SptVersion { get; init; } = new("~4.1.6");
     public List<string>? Incompatibilities { get; init; } = null;
     public Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; } = new()
