@@ -14,11 +14,7 @@ public class Oni(
         var assembly = Assembly.GetExecutingAssembly();
         
         // Use WTT-CommonLib services
-        await wttCommon.CustomAssortSchemeService.CreateCustomAssortSchemes(assembly);
-        await wttCommon.CustomQuestService.CreateCustomQuests(assembly);
-        await wttCommon.CustomQuestZoneService.CreateCustomQuestZones(assembly);
         await wttCommon.CustomItemServiceExtended.CreateCustomItems(assembly);
-        await wttCommon.CustomDialogueService.CreateCustomDialogues(assembly);
         await wttCommon.CustomLootspawnService.CreateCustomLootSpawns(assembly);
         await Task.CompletedTask;
     }
